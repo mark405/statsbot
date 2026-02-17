@@ -25,7 +25,7 @@ async def get_stats():
     async with Session() as session:
         # общее количество пользователей
         total_users = await session.execute(
-            text("SELECT COUNT(*) FROM user_progress")
+            text("SELECT COUNT(*) FROM user_progress WHERE username != 'hackv2bot'")
         )
         total_users = total_users.scalar()
 
