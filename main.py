@@ -31,7 +31,12 @@ async def get_stats():
 
         # список всех пользователей с ником и последним шагом
         user_list = await session.execute(
-            text("SELECT username, last_step FROM user_progress ORDER BY last_step DESC")
+            text("""
+                 SELECT username, last_step
+                 FROM user_progress
+                 WHERE username != 'hackv2bot'
+                 ORDER BY last_step DESC
+                 """)
         )
         user_list = user_list.fetchall()
 
