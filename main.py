@@ -59,12 +59,30 @@ async def stats(msg: types.Message):
         await msg.answer("Нет данных для статистики.")
         return
 
-    # Создаем клавиатуру с кнопками по ботам
-    kb = InlineKeyboardMarkup(row_width=2)
-    for bot_name in bot_totals.keys():
-        kb.add(InlineKeyboardButton(text=bot_name, callback_data=f"bot_stats:{bot_name}"))
+    # формируем список рядов кнопок
+    buttons = []
+    row = []
 
-    await msg.answer("Выберите бота для просмотра статистики:", reply_markup=kb)
+    for i, bot_name in enumerate(bot_totals.keys(), start=1):
+        row.append(
+            InlineKeyboardButton(
+                text=bot_name,
+                callback_data=f"bot_stats:{bot_name}"
+            )
+        )
+        if i % 2 == 0:
+            buttons.append(row)
+            row = []
+
+    if row:  # если осталась неполная строка
+        buttons.append(row)
+
+    kb = InlineKeyboardMarkup(inline_keyboard=buttons)
+
+    await msg.answer(
+        "Выберите бота для просмотра статистики:",
+        reply_markup=kb
+    )
 
 
 # --- callback для кнопок ---
