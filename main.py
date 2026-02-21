@@ -84,9 +84,18 @@ async def stats(msg: types.Message):
         reply_markup=kb
     )
 
+MAX_LEN = 4000  # safe margin
+
+
+def split_message(text: str, limit: int = MAX_LEN):
+    parts = []
+    while text:
+        parts.append(text[:limit])
+        text = text[limit:]
+    return parts
 
 # --- callback для кнопок ---
-@dp.callback_query()
+dp.callback_query()
 async def bot_stats_callback(query: CallbackQuery):
     if not query.data.startswith("bot_stats:"):
         return
@@ -97,15 +106,22 @@ async def bot_stats_callback(query: CallbackQuery):
     users = bot_users.get(bot_name, [])
     total = bot_totals.get(bot_name, 0)
 
-    text_msg = f"🤖 Статистика для бота: {bot_name}\n👥 Всего пользователей: {total}\n"
-    text_msg += "📍 Пользователи и их последний шаг:\n"
-    if users:
-        for username, last_step in users:
-            text_msg += f"• {username} — {last_step}\n"
-    else:
-        text_msg += "Нет данных."
+    header = (
+        f"🤖 Статистика для бота: {bot_name}\n"
+        f"👥 Всего пользователей: {total}\n"
+        "📍 Пользователи и их последний шаг:\n"
+    )
 
-    await query.message.edit_text(text_msg)
+    lines = [f"• {u} — {s}\n" for u, s in users]
+    full_text = header + "".join(lines)
+
+    parts = split_message(full_text)
+
+    await query.message.edit_text(parts[0])
+
+    for part in parts[1:]:
+        await query.message.answer(part)
+
     await query.answer()
 
 
