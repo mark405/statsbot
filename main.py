@@ -95,7 +95,7 @@ def split_message(text: str, limit: int = MAX_LEN):
     return parts
 
 # --- callback для кнопок ---
-dp.callback_query()
+@dp.callback_query()
 async def bot_stats_callback(query: CallbackQuery):
     if not query.data.startswith("bot_stats:"):
         return
