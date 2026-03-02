@@ -33,7 +33,7 @@ async def get_stats_by_bot():
 
     async with Session() as session:
         result = await session.execute(
-            text("SELECT bot_name, username, last_step FROM user_progress where username != 'hackbotukr' and username != 'hackbotpolish'")
+            text("SELECT bot_name, username, last_step FROM user_progress where username != 'hackbotukr' and username != 'hackbotpolish' and username != 'hackbotruc' and username != 'hackbotazer'")
         )
         rows = result.fetchall()
 
